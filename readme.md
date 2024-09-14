@@ -3,4 +3,4 @@
 ### scrapped and collected large product data with listing informations.
 ### model training with properly annotated dataset(ongoing).
 ### building feature vector indexes and search implementation (ongoing)
- 
+### detailed products database implementation (ongoing)
