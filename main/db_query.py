@@ -19,10 +19,22 @@ class DatabaseQuery:
         
         self.db_config = db_config 
     
-    def similar_search(self,query_features,k=5):
+    def similar_search(self,query_features,k=10,distance_threshold=0.0005):
+        
+        filtered_id = []
+        filtered_distance = []
         distances, indicies = self.index.search(query_features,k)
-        image_id = [self.faiss_id_to_image_name[idx] for idx in indicies[0] ]
-        return image_id, distances[0]
+        
+        for i in range(len(indicies[0])):
+            if i == 0 or distances[0][i] - distances[0][i - 1] > distance_threshold:
+                filtered_id.append(self.faiss_id_to_image_name[indicies[0][i]])
+                filtered_distance.append(distances[0][i])
+        
+        return filtered_id, filtered_distance
+        
+        
+        # image_id = [self.faiss_id_to_image_name[idx] for idx in indicies[0] ]
+        # return image_id, distances[0]
     
     def query_database(self, image_id):
         conn = psycopg2.connect(**self.db_config)
