@@ -1,5 +1,4 @@
 # app/reverse_image_search_app.py
-
 import streamlit as st
 from PIL import Image
 from feature_extractor import FeatureExtractor
@@ -10,7 +9,7 @@ import base64
 import io
 
 class ReverseImageSearchApp:
-    def __init__(self, db_config, faiss_index_path, pickle_path, nprobe=10):
+    def __init__(self, db_config, faiss_index_path, pickle_path, nprobe=50):
         # Initialize the feature extractor and database query objects
         self.extractor = FeatureExtractor()
         self.db_query = DatabaseQuery(db_config,faiss_index_path,pickle_path,nprobe)
@@ -55,7 +54,7 @@ class ReverseImageSearchApp:
 
             # Query the FAISS index
             #st.write("Searching the database...")
-            image_id , distances = self.db_query.similar_search(query_features, k=5)
+            image_id , distances = self.db_query.similar_search(query_features, k=10)
             
             st.write(f"Top matches (image IDs): {image_id}")
             st.write(f"Distances: {distances}")
