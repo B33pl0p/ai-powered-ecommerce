@@ -16,7 +16,7 @@ faiss_index_path = "faiss_ivf_hnsw.index"
 pickle_path = "faiss_id_to_image_map.pkl"
 
 # nprobe (number of clusters to search) set for IVF
-nprobe = 50
+nprobe = 10
 
 if __name__ == "__main__":
     app = ReverseImageSearchApp(db_config, faiss_index_path, pickle_path, nprobe)
