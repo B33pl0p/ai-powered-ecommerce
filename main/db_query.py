@@ -3,7 +3,7 @@
 import faiss
 import numpy as np
 import pickle
-import os
+import os       
 import psycopg2
 
 class DatabaseQuery:
