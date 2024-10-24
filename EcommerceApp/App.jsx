@@ -2,7 +2,7 @@ import { StyleSheet, Text, View,TouchableOpacity,Modal } from 'react-native'
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import {createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
 import { enableScreens } from 'react-native-screens';
 enableScreens();
@@ -10,6 +10,8 @@ enableScreens();
 
 import ImagePickerscreen from './src/screens/ImagePickerscreen'
 import HomeScreen from './src/screens/HomeScreen';
+import ResultsScreen from './src/screens/ResultsScreen'
+
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -22,13 +24,24 @@ import Account from './src/screens/Account';
 
 //create a bottom tab navigator  object
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 
 
 //homestack .. stack navigator for homescreen and image picker screen
 
 
+function HomeStackNavigator() {
+    return (
+        <Stack.Navigator screenOptions={{headerShown : false}}>
+            <Stack.Screen name="HomeScreen" component={HomeScreen} />
+            <Stack.Screen name="ImagePickerscreen" component={ImagePickerscreen} />
+            <Stack.Screen name="ResultsScreen" component={ResultsScreen} />
 
+        </Stack.Navigator>
+        
+    )
+}
 
 
 const App = () => {
@@ -44,7 +57,7 @@ const App = () => {
         tabBarActiveBackgroundColor : '#FFFF08'
       }}>
 
-        <Tab.Screen name = {"Home"}  component={HomeScreen}
+        <Tab.Screen name = {"Home"}  component={HomeStackNavigator}
         options={
             {tabBarIcon : () => {
                 return (

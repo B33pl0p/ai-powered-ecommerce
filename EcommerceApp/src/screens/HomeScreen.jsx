@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -7,9 +7,9 @@ import HeaderText from '../components/HeaderText';
 import CategoryScrollable from '../components/CategoryScrollable';
 import ItemCards from '../components/ItemCards';
 
+//{navigation} is added to add the navigation property into homescreen
 
-
-export default function HomeScreen() {
+export default function HomeScreen( {navigation} ) {
   return (
   <LinearGradient colors = {["#cfcfe0", "#dddfdf", "#dddfdf"]} style = {styles.LinearGradient}> 
   <View>
@@ -17,7 +17,9 @@ export default function HomeScreen() {
       </HeaderText>
         <Text style ={styles.matchText}>Search Your Style</Text>
         <View style = {styles.inputContainer}>
+               <TouchableOpacity onPress={ () => navigation.navigate('ImagePickerscreen')}>
               <AntDesign name = {'camerao'} color = {"black"} size = {24} style = {styles.iconStyle}></AntDesign>
+              </TouchableOpacity>
               <TextInput style = {styles.textInput} placeholder={'Enter text or upload image'} placeholderTextColor={"#C0C0C0"}>
                </TextInput>
          </View>
