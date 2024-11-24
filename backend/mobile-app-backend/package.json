@@ -1,0 +1,16 @@
+{
+  "name": "ecommerce-server",
+  "version": "1.0.0",
+  "description": "server for hamrobazar ecommerce app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "B33pl0p",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "pg": "^8.13.0"
+  }
+}
