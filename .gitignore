@@ -1,3 +1,5 @@
-main/faiss_ivf_hnsw.index
-main/fourth_faiss_ivf_hnsw_index.index
-main/__pycache__/
+backend/faiss_ivf_hnsw.index
+backend/fourth_faiss_ivf_hnsw_index.index
+backend/__pycache__/
+backend/data
+.venv
