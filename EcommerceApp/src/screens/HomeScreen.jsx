@@ -13,8 +13,6 @@ export default function HomeScreen( {navigation} ) {
   return (
   <LinearGradient colors = {["#cfcfe0", "#dddfdf", "#dddfdf"]} style = {styles.LinearGradient}> 
   <View>
-      <HeaderText>
-      </HeaderText>
         <Text style ={styles.matchText}>Search Your Style</Text>
         <View style = {styles.inputContainer}>
                <TouchableOpacity onPress={ () => navigation.navigate('ImagePickerscreen')}>

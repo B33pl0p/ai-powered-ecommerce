@@ -9,12 +9,13 @@ const ItemCards = () => {
 
   const fetchItems = async () => {
     try{
-      const response = await fetch('http://192.168.100.53:3000/products')
+      // const response = await fetch('http://192.168.100.53:3000/products')
+      const response = await fetch('http://192.168.107.216:3400/products')
       const data = await response.json();
       setItems(data)
     }
     catch(error){
-      console.error('Error fetching items')
+      console.error('Error fetching items', error.message)
     }
   };  
 
@@ -33,7 +34,7 @@ const ItemCards = () => {
 const renderItem = ({ item }) => (
   <View style={styles.card} key={item.product_id.toString()}>
     <Image
-      source={{ uri: `http://192.168.100.53:3000${item.imageUrl}` }}
+      source={{ uri: `http://192.168.107.216:3400/images/${item.product_id}.jpg` }}
       style={styles.image}
     />
     <Text style={styles.productName} numberOfLines={2}>{item.product_display_name}</Text>
@@ -54,7 +55,7 @@ return (
   renderItem = {renderItem}
   keyExtractor = { (item) => item.product_id.toString() }
   numColumns={2}
-  key ={2}
+
   contentContainerStyle = {styles.mainContainer}
   initialNumToRender={10}
   >

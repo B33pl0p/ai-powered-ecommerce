@@ -26,7 +26,8 @@ db_query = DatabaseQuery(db_config, faiss_index_path, pickle_path, nprobe)
 TEMP_FOLDER = './tmp'
 
 # Folder where the similar images from the FAISS index are stored
-IMAGE_FOLDER = os.path.abspath('./data/images')  # Use absolute path
+#IMAGE_FOLDER = os.path.abspath('./data/images')  # Use absolute path
+IMAGE_FOLDER = '/home/biplop/ai-powered-ecommerce/database/data/images/'
 
 # Ensure the temporary folder exists
 if not os.path.exists(TEMP_FOLDER):
@@ -99,7 +100,7 @@ def search_image():
                 
                 # Construct the image URL for images stored in the main/data/images folder
                 image_filename = f"{img_id}.jpg"  # Assuming image files are named by their IDs
-                product_details['image_url'] = f"http://192.168.100.53:5000/images/{image_filename}"
+                product_details['image_url'] = f"http://192.168.107.216:5000/images/{image_filename}"
                 
                 results.append(product_details)
         print(f"Fetched and returned details for {len(results)} images.")

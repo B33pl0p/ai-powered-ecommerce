@@ -83,7 +83,7 @@ const ImagePickerscreen = () => {
     });
 
     try {
-      const response = await axios.post('http://192.168.100.53:5000/upload', formData, {
+      const response = await axios.post('http://192.168.107.216:5000/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

@@ -37,7 +37,6 @@ function HomeStackNavigator() {
             <Stack.Screen name="HomeScreen" component={HomeScreen} />
             <Stack.Screen name="ImagePickerscreen" component={ImagePickerscreen} />
             <Stack.Screen name="ResultsScreen" component={ResultsScreen} />
-
         </Stack.Navigator>
         
     )
