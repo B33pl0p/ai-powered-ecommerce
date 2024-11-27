@@ -1,5 +1,5 @@
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View,Button } from 'react-native'
+import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import LinearGradient from 'react-native-linear-gradient';
@@ -10,6 +10,39 @@ import ItemCards from '../components/ItemCards';
 //{navigation} is added to add the navigation property into homescreen
 
 export default function HomeScreen( {navigation} ) {
+  //state to keep the input text
+  const [InputText , setInputText] = useState('')
+
+  const handleTextChange = (text) => {
+    setInputText(text);
+  };
+
+  const sendToServer = async () => {
+    if(InputText.trim === ('')) {
+      Alert.alert('Please enter some text to search')
+    }
+  }
+  try {
+    const response = await fetch('http://192.168.107.216:4500/textquery', {
+      method: 'POST',
+      headers : {
+        'Content-Type' : 'application/json',
+      },
+      body: JSON.stringify({ userInput: InputText }), // Sending the input text to the server
+  });
+  const data = await response.json();
+
+  if (response.ok) {
+    Alert.alert('Success', 'Data sent successfully!');
+    console.log('Server Response:', data);
+  } else {
+    Alert.alert('Error', 'Failed to send data.');
+  }
+} catch (error) {
+  console.error('Error sending data:', error);
+  Alert.alert('Error', 'An error occurred while sending data.');
+}
+
   return (
   <LinearGradient colors = {["#cfcfe0", "#dddfdf", "#dddfdf"]} style = {styles.LinearGradient}> 
   <View>
@@ -20,6 +53,8 @@ export default function HomeScreen( {navigation} ) {
               </TouchableOpacity>
               <TextInput style = {styles.textInput} placeholder={'Enter text or upload image'} placeholderTextColor={"#C0C0C0"}>
                </TextInput>
+              <AntDesign name = {'search1'} color = {"black"} size = {24} style = {styles.iconStyle}></AntDesign>
+              
          </View>
  
   </View>
@@ -63,5 +98,9 @@ const styles = StyleSheet.create({
    iconStyle : {
     paddingLeft : 10,
     marginRight : 5
+   },
+   button : {
+    marginLeft : 70,
+   
    }
 }) 
