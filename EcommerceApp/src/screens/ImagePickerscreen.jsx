@@ -4,6 +4,7 @@ import axios from 'axios'; // For sending the image to the server
 import ImagePicker from 'react-native-image-crop-picker';
 import { useNavigation } from '@react-navigation/native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';  // Icons for the buttons
+import IP_ADDRESSES from '../components/IPaddresses';
 
 const ImagePickerscreen = () => {
   const [imageUri, setImageUri] = useState(null);  // To store the selected image's URI
@@ -83,7 +84,7 @@ const ImagePickerscreen = () => {
     });
 
     try {
-      const response = await axios.post('http://192.168.107.216:5000/upload', formData, {
+      const response = await axios.post(`${IP_ADDRESSES.PC_LOCAL}:5000/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

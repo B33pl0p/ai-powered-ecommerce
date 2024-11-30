@@ -1,11 +1,12 @@
 import os
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-app = Flask(__name__)
-CORS(app)
-
+import pickle
 from feature_extractor import FeatureExtractor
 from db_query import DatabaseQuery
+
+app = Flask(__name__)
+CORS(app)
 
 # Initialize the feature extractor and database query objects
 db_config = {
@@ -22,23 +23,31 @@ nprobe = 10
 extractor = FeatureExtractor()
 db_query = DatabaseQuery(db_config, faiss_index_path, pickle_path, nprobe)
 
-# Temporary folder to store the uploaded image for processing
+# Folder paths for serving images and storing temporary uploads
 TEMP_FOLDER = './tmp'
-
-# Folder where the similar images from the FAISS index are stored
-#IMAGE_FOLDER = os.path.abspath('./data/images')  # Use absolute path
 IMAGE_FOLDER = '/home/biplop/ai-powered-ecommerce/database/data/images/'
 
 # Ensure the temporary folder exists
 if not os.path.exists(TEMP_FOLDER):
     os.makedirs(TEMP_FOLDER)
     print(f"Temporary folder created at {TEMP_FOLDER}")
-    
+
 # Ensure the image folder exists
 if not os.path.exists(IMAGE_FOLDER):
     print(f"Error: Image folder {IMAGE_FOLDER} does not exist!")
 else:
     print(f"Serving images from {IMAGE_FOLDER}")
+
+# Load the embeddings from the Pickle file if it exists
+checkpoint_file = "clip_embeddings_batch.pkl"
+embeddings = {}
+
+if os.path.exists(checkpoint_file):
+    with open(checkpoint_file, 'rb') as f:
+        embeddings = pickle.load(f)
+    print(f"Embeddings loaded from {checkpoint_file}")
+else:
+    print(f"Pickle file '{checkpoint_file}' not found.")
 
 @app.route('/')
 def home():
@@ -100,7 +109,7 @@ def search_image():
                 
                 # Construct the image URL for images stored in the main/data/images folder
                 image_filename = f"{img_id}.jpg"  # Assuming image files are named by their IDs
-                product_details['image_url'] = f"http://192.168.107.216:5000/images/{image_filename}"
+                product_details['image_url'] = f"http://192.168.104.216:5000/images/{image_filename}"
                 
                 results.append(product_details)
         print(f"Fetched and returned details for {len(results)} images.")
@@ -114,6 +123,41 @@ def search_image():
         print(f"Temporary image {temp_image_path} deleted.")
 
     # Return the results as JSON, including both image URLs and information from the database
+    return jsonify(results)
+
+
+@app.route('/upload_text', methods=['POST'])    
+def search_text():
+    query_text = request.data.decode('utf-8')
+
+    if not query_text:
+        return jsonify({"error": "No query provided"}), 400
+    
+    # Use the FeatureExtractor to find best matches from the embeddings
+    matches = extractor.find_best_match(query_text, embeddings)
+    print(matches)
+
+    image_names = [match[0] for match in matches]
+
+    # Try finding the images from the db
+    results = []
+    try:
+        for idx, img_id in enumerate(image_names):
+            result = db_query.query_database(img_id)
+            if result:
+                product_details = db_query.unpack_result(result)
+                
+                # Construct the image URL for images stored in the main/data/images folder
+                image_filename = f"{img_id}.jpg"  # Assuming image files are named by their IDs
+                product_details['image_url'] = f"http://192.168.104.216:5000/images/{image_filename}"
+                
+                results.append(product_details)
+        print(f"Fetched and returned details for {len(results)} images.")
+    except Exception as e:
+        print(f"Error fetching image details from the database: {e}")
+        return jsonify({'error': 'Database query failed'}), 500
+
+    # Return the search results as JSON
     return jsonify(results)
 
 if __name__ == '__main__':
