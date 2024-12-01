@@ -49,18 +49,21 @@ Welcome to the **Reverse Image Search App**! This project allows users to upload
 (Add screenshots of the app and its features here)
 
 - **Home Screen**:
-  ![Home Screen](placeholder-for-image)
+  ![Home Screen](![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/17eca609-3d8a-410b-a565-e997cd22cca5/67b65bc9-b0eb-4a77-9d7e-49d4d7338521/image.png))
 
 - **Image Picker**:
-  ![Image Picker](![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/17eca609-3d8a-410b-a565-e997cd22cca5/573695fd-d7c7-46cd-8194-b23a3ee1c218/image.png))
+  ![Image Picker](![imagepicker](https://github.com/user-attachments/assets/f4f85ceb-fb68-43fc-9596-3580909c1897)
+)
 
   
 - **Image Capture UI**:
-  ![Image Picker](![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/17eca609-3d8a-410b-a565-e997cd22cca5/36524527-9dc5-4bc0-953a-8bcf0415f26f/image.png))
+  ![Image Picker](![imagecapture](https://github.com/user-attachments/assets/b628806f-6e81-4228-978e-4a2b31d40ebf))
+
 
 
 - **Results Screen**:
-  ![Results Screen](![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/17eca609-3d8a-410b-a565-e997cd22cca5/32e1ad9c-eec5-4bd0-9c27-09b3721f5f14/image.png))
+  ![Results Screen](![resultsdisplay](https://github.com/user-attachments/assets/b603a432-2c0d-441e-a3d3-dcf3c6653e42))
+
 
 ---
 
