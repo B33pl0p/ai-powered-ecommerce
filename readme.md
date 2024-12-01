@@ -52,10 +52,15 @@ Welcome to the **Reverse Image Search App**! This project allows users to upload
   ![Home Screen](placeholder-for-image)
 
 - **Image Picker**:
-  ![Image Picker](placeholder-for-image)
+  ![Image Picker](![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/17eca609-3d8a-410b-a565-e997cd22cca5/573695fd-d7c7-46cd-8194-b23a3ee1c218/image.png))
+
+  
+- **Image Capture UI**:
+  ![Image Picker](![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/17eca609-3d8a-410b-a565-e997cd22cca5/36524527-9dc5-4bc0-953a-8bcf0415f26f/image.png))
+
 
 - **Results Screen**:
-  ![Results Screen](placeholder-for-image)
+  ![Results Screen](![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/17eca609-3d8a-410b-a565-e997cd22cca5/32e1ad9c-eec5-4bd0-9c27-09b3721f5f14/image.png))
 
 ---
 
