@@ -1,7 +1,7 @@
 backend/faiss_ivf_hnsw.index
 backend/fourth_faiss_ivf_hnsw_index.index
 backend/image-search-backend/__pycache__/
-backend/mobile-app-backend/__pycache__/
+backend/__pycache__/
 database/data
 backend/mobile-app-backend/node_modules
 .venv
