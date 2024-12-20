@@ -9,6 +9,7 @@ import VectorSearch
 import base64
 import os
 from pydantic import BaseModel
+from sqlalchemy import func
 
 app = FastAPI()
 
@@ -44,7 +45,7 @@ def fetch_product_details(db, product_ids, products):
                     "product_display_name": product.product_display_name,
                     "price": product.price,
                     "rating": product.rating,
-                    "image_url": base64.b64encode(product.image_data).decode('utf-8'),  # Directly base64 encode here
+                    "image_data": base64.b64encode(product.image_data).decode('utf-8'),  # Directly base64 encode here
                     "similarity": next(item['similarity'] for item in products if item['product_id'] == product.product_id)
                 })
         return detailed_products
@@ -54,15 +55,13 @@ def fetch_product_details(db, product_ids, products):
 
 @app.get("/products")
 def read_products(
-    skip: int = Query(0, ge=0),
-    limit: int = Query(10, ge=1, le=100),
+    limit: int = Query(100, ge=1, le=100),
     db: Session = Depends(get_db)
 ):
     start_time = time.time()
 
     # Fetch products from the database
-    products = db.query(Product).offset(skip).limit(limit).all()
-
+    products = db.query(Product).order_by(func.random()).limit((limit)).all()
     # Process products and encode image_data as Base64
     result = []
     for product in products:
@@ -123,6 +122,7 @@ async def search_image(image: UploadFile = File(...) , db: Session = Depends(get
     # Reuse the helper function for fetching and formatting products
     detailed_products = fetch_product_details(db, product_ids, products)
     
+
     if detailed_products is None:
         return JSONResponse(content={"error": "No products found in the database"}, status_code=404)
 
@@ -132,7 +132,7 @@ async def search_image(image: UploadFile = File(...) , db: Session = Depends(get
 
     end_time = time.time()
     print(f"Total time for search_image: {end_time - start_time:.4f} seconds")
-
+    
     return {"result": detailed_products} if detailed_products else JSONResponse(
         content={"error": "No matching results found"}, status_code=404
     )
