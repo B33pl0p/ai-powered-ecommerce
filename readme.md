@@ -13,6 +13,33 @@ Welcome to the **Reverse Image Search App**! This project allows users to upload
 
 ---
 
+## Installation
+
+### Backend
+
+1. Clone the repository:
+- `` git clone https://github.com/B33pl0p/ai-powered-ecommerce.git``
+- `` cd ai-powered-ecommerce ``
+
+2. Set up the PostgreSQL database:
+(The database will be hosted later in a server and made globally available)
+Until then : 
+   - Create a database named `products_db`.
+   - Update the database credentials in `db_config` inside  and `main.py` of backend.
+   - Import the schema given in the database folder into the database.
+
+3. Install dependencies for backend:
+   -``cd backend``
+  - ``pip install -r requirements.txt``
+  - run the FastApi server by ` uvicorn main:app --port 4000 --host 0.0.0.0 --reload`
+ - replace the port name by your desired port
+
+4. Setup React Native in your PC  
+  - then `cd mobile_app`
+   -install dependencies by running `npm install`
+  - replace the ip address given in components/Ipaddresses.jsx with your PC ip
+  - run app in emulator or android device by `npm run start` and choosing a desired method
+
 ## How It Works
 
 1. **Image Upload**:
@@ -20,7 +47,7 @@ Welcome to the **Reverse Image Search App**! This project allows users to upload
 2. **Feature Extraction**:
    - The backend extracts unique features using the **CLIP** model.
 3. **Similarity Search**:
-   - A FAISS index is queried to find the closest matches.
+   -Uses pgvector as vector database to perform similarity search
 4. **Metadata Retrieval**:
    - Additional details about the images are fetched from the database.
 5. **Results Display**:
@@ -28,83 +55,10 @@ Welcome to the **Reverse Image Search App**! This project allows users to upload
 
 ---
 
-## Technologies Used
-
-### Backend
-
-- **Python** and **Flask** for API and server.
-- **CLIP** for extracting image features.
-- **FAISS** for fast similarity search.
-- **PostgreSQL** for storing image metadata.
-
-### Frontend
-
-- **React Native** for the mobile app.
-- Clean and intuitive UI components for smooth user experience.
-
----
-
-## Screenshots
-
-(Add screenshots of the app and its features here)
-
-- **Home Screen**:
-  ![Home Screen](![image](https://github.com/user-attachments/assets/d1931a27-d1e5-4faa-a684-99dab8ed5eac)
-)
-
-- **Image Picker**:
-  ![Image Picker](![imagepicker](https://github.com/user-attachments/assets/f4f85ceb-fb68-43fc-9596-3580909c1897)
-)
-
-  
-- **Image Capture UI**:
-  ![Image Picker](![imagecapture](https://github.com/user-attachments/assets/b628806f-6e81-4228-978e-4a2b31d40ebf))
 
 
 
-- **Results Screen**:
-  ![Results Screen](![resultsdisplay](https://github.com/user-attachments/assets/b603a432-2c0d-441e-a3d3-dcf3c6653e42))
 
 
----
 
-## Installation
-
-### Backend
-
-1. Clone the repository:
-   git clone https://github.com/your-repo-name.git
-   cd backend
-
-2. Install dependencies:
-   pip install -r requirements.txt
-
-3. Set up the PostgreSQL database:
-   - Create a database named `fashion_db`.
-   - Update the database credentials in `db_config` inside `app.py` and `main.py`.
-   - Import the schema given in the database folder into the database.
-
-4. Ensure FAISS index and metadata files are available:
-   - Place the `faiss_ivf_hnsw.index` and `faiss_id_to_image_map.pkl` files in the root directory.
-   - Update the paths in `app.py`.
-
-5. Run the backend server:
-   python app.py
-
----
-
-### Frontend
-
-1. Navigate to the mobile app directory:
-   cd EcommerceApp
-
-2. Install dependencies:
-   npm install
-
-3. Run the app:
-   npm start
-
-4. Use an emulator or physical device to test the app
-
-5. The App should run fine but dont fogret to change the necessary IP addresses inside the mobile app and the backend
 
