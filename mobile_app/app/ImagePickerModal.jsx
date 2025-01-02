@@ -15,7 +15,7 @@ import {
   Image,
 }from "react-native";
 import { FontAwesome6, AntDesign, FontAwesome, EvilIcons, Entypo } from "@expo/vector-icons"; // Default import if it exists
-import { requestMediaLibraryPermissionsAsync } from "expo-image-picker";
+import { launchImageLibraryAsync, requestMediaLibraryPermissionsAsync } from "expo-image-picker";
 import React from "react";
 import IP_ADDRESSES from "../components/Ipaddresses";
 import axios from "axios";
@@ -97,6 +97,50 @@ const ImagePickerModal = () => {
       setShowCaptureOptions(true); // Show capture options screen
     }
   };
+  const selectImage = async () => {
+    try {
+      // Launch the image library asynchronously
+      const galleryPhoto = await launchImageLibraryAsync({
+        quality: 1,
+        base64: false, // base64 should be a boolean, not a string
+        mediaTypes: 'Images', // Ensure we're only getting images
+      });
+  
+      // Log the full response to inspect the structure
+      console.log("Full galleryPhoto response:", galleryPhoto);
+  
+      // Check if the user canceled the selection
+      if (galleryPhoto.cancelled) {
+        Alert.alert("No photo selected", "You canceled the photo selection.");
+        return; // Exit if no image was selected
+      }
+  
+      // Decode URI if it's URL-encoded
+      if (galleryPhoto.uri) {
+        const decodedUri = decodeURIComponent(galleryPhoto.uri);
+        console.log("Decoded Photo URI:", decodedUri); // Log the decoded URI
+  
+        // Validate the decoded URI
+        if (decodedUri.startsWith('file://')) {
+          setPhotoUri(decodedUri); // Set the decoded URI for the selected image
+          setShowCaptureOptions(true); // Show the capture options
+        } else {
+          // Handle the case where the URI is invalid
+          Alert.alert("Error", "The selected photo is invalid. Please try again.");
+          console.error("Invalid photo URI:", decodedUri);
+        }
+      } else {
+        // Handle the case where the URI is missing
+        Alert.alert("Error", "No photo URI was returned. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error selecting image:", error); // Log the error to the console
+      Alert.alert("Error", "An error occurred while selecting the photo. Please try again.");
+    }
+  };
+  
+  
+  
 
   // Handle "Use Photo" button press (replace with your logic)
   const usePhoto = () => {
@@ -131,7 +175,7 @@ const ImagePickerModal = () => {
           <Text style={styles.text}> Capture an image or select from gallery </Text>
           <View style={styles.buttonContainer}>
             {/* Gallery Button (Left) */}
-            <TouchableOpacity>
+            <TouchableOpacity onPress={selectImage}>
               <FontAwesome name="photo" size={30} color={"white"} />
             </TouchableOpacity>
 
