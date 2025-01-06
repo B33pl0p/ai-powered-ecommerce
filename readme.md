@@ -1,8 +1,7 @@
-# Reverse Image Search App
+# Ecommerce with reverse image search and Semantic Search
 
-Welcome to the **Reverse Image Search App**! This project allows users to upload an image and find visually similar images along with detailed information about them. It combines advanced machine learning and efficient database querying to provide fast and accurate results.
 
----
+
 
 ## Features
 
