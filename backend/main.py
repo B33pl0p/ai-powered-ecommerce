@@ -58,7 +58,7 @@ def read_products(
     limit: int = Query(100, ge=1, le=100),
     db: Session = Depends(get_db)
 ):
-    start_time = time.time()
+    #start_time = time.time()
 
     # Fetch products from the database
     products = db.query(Product).order_by(func.random()).limit((limit)).all()
@@ -75,8 +75,8 @@ def read_products(
         
         result.append(product_dict)
     
-    end_time = time.time()
-    print(f"Time taken for read_products: {end_time - start_time:.4f} seconds")
+    #end_time = time.time()
+    #print(f"Time taken for read_products: {end_time - start_time:.4f} seconds")
     
     return {"result": result}
 
@@ -111,7 +111,7 @@ async def search_image(image: UploadFile = File(...) , db: Session = Depends(get
         search_start_time = time.time()
         products = VectorSearch.search_by_image_embedding(query_features)
         search_end_time = time.time()
-        print(f"Time taken for vector search: {search_end_time - search_start_time:.4f} seconds")
+        print(f"Time taken for similarity search: {search_end_time - search_start_time:.4f} seconds")
     
     except Exception as e:
         print(f"Error during searching: {e}")
@@ -131,7 +131,7 @@ async def search_image(image: UploadFile = File(...) , db: Session = Depends(get
         os.remove(temp_imgpath)
 
     end_time = time.time()
-    print(f"Total time for search_image: {end_time - start_time:.4f} seconds")
+    #print(f"Total time for search_image: {end_time - start_time:.4f} seconds")
     
     return {"result": detailed_products} if detailed_products else JSONResponse(
         content={"error": "No matching results found"}, status_code=404
@@ -181,3 +181,5 @@ async def search_text(request: TextQueryRequest, db: Session = Depends(get_db)):
     return {"result": detailed_products} if detailed_products else JSONResponse(
         content={"error": "No matching results found"}, status_code=404
     )
+
+#uvicorn main:app --port 4000 --host 0.0.0.0 --reload
