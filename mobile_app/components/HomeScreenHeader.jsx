@@ -8,7 +8,7 @@ const HomeScreenHeader = () => {
 <View style = {styles.header}>
     <View style = {styles.logoandtext}>
     <View style = {styles.imageIcon1}>
-        <Image style={styles.topIconStyle} source={ require('../assets/images/hamrobazar.png')}></Image>
+        <Image style={styles.topIconStyle} source={ require('../assets/images/logo_c.png')}></Image>
         </View>
         <Text style={styles.text}>Bazaar</Text>
     </View>

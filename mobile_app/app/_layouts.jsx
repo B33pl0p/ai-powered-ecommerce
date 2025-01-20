@@ -7,9 +7,8 @@ export default function RootLayout() {
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />      
-      <Stack.Screen name="ImagePickerModal" component = {ImagePickerModal}/>
       <Stack.Screen name="ItemCards" component = {ItemCards} />
-
+      <Stack.Screen name="ImagePickerModal" component = {ImagePickerModal}/>
       
       
     </Stack>

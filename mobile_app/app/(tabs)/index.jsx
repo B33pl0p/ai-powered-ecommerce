@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, ScrollView } from "react-native";
 import React, { useState } from "react";
 import FetchProducts from "../../components/FetchProducts";
 import HomeScreenHeader from "../../components/HomeScreenHeader";
@@ -8,7 +8,7 @@ import { Chip } from "react-native-paper";
 
 const HomeScreen = () => {
   return (
-    <View>
+   <View>
       <HomeScreenHeader />
       <CategoryGrid />
       <SearchBar />
@@ -18,7 +18,7 @@ const HomeScreen = () => {
         </Chip>
       </View>
       <FetchProducts />
-    </View>
+      </View>
   );
 };
 
