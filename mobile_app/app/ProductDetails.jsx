@@ -25,18 +25,19 @@ const ProductDetails = () => {
         <View style={styles.imageContainer}>
           <Image
             style={styles.productImage}
-            source={{ uri: `data:image/jpeg;base64,${product.image_data}` }}
+            source={{ uri: product.image_url }}
           />
         </View>
         <View style={styles.contentContainer}>
-          <Text style={styles.productName}>{product.product_display_name}</Text>
+          <Text style={styles.productName}>{product.name}</Text>
 
           {product.price != null ? <Text style={styles.price}>NPR {product.price}</Text> : <Text style={styles.price}>Price : N/A</Text>}
+          {product.rating != null ? <Text style={styles.price}>NPR {product.rating}</Text> : <Text style={styles.price}>Rating : N/A</Text>}
 
           <Text style={styles.description}>{dummydescription}</Text>
           <Text style={styles.otherInfoText}>Category : {product.sub_category}</Text>
-          <Text style={styles.otherInfoText}>Season : {product.season}</Text>
-          <Text style={styles.otherInfoText}>Gender : {product.gender}</Text>
+          {/* <Text style={styles.otherInfoText}>Season : {product.season}</Text> */}
+          {/* <Text style={styles.otherInfoText}>Gender : {product.gender}</Text> */}
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.addToCartButton}>
               <Text style={styles.buttonTextCart}>Add to Cart</Text>

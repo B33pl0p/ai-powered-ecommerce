@@ -32,11 +32,11 @@ const ItemCards = () => {
       <Card style={styles.cardContainer}>
         <Card.Cover
           style={styles.card}
-          source={{ uri: `data:image/jpeg;base64,${item.image_data}` }}
+          source={{ uri: item.image_url }}
         />
         <Card.Content>
           <Text numberOfLines={2} style={styles.productName}>
-            {item.product_display_name}
+            {item.name}
           </Text>
           <Text style={styles.productPrice}>${item.price}</Text>
           <Text style={styles.productRating}>Rating: {item.rating}</Text>

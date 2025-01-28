@@ -3,12 +3,12 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigation } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View, Alert, Image } from "react-native";
 import { FontAwesome6, AntDesign, FontAwesome, EvilIcons, Entypo } from "@expo/vector-icons"; // Default import if it exists
-import {  requestMediaLibraryPermissionsAsync } from "expo-image-picker";
-import { launchImageLibrary } from "react-native-image-picker";
+import * as ImagePicker from 'expo-image-picker'; // Import expo-image-picker
 import React from "react";
 import IP_ADDRESSES from "../components/Ipaddresses";
 import axios from "axios";
 import { ActivityIndicator } from "react-native";
+import HomeScreenHeader from "../components/HomeScreenHeader";
 
 const ImagePickerModal = () => {
   // State variables
@@ -38,8 +38,11 @@ const ImagePickerModal = () => {
         },
       });
 
-      const data = response.data;
-      navigation.navigate("ItemCards", { products: data.result });
+      const data = response.data.result;
+    //  console.log(data);
+      navigation.navigate("ItemCards", { products: data });
+
+
     } catch (error) {
       console.error("Error uploading photo:", error);
       Alert.alert("Error", "Failed to upload photo. Please try again.");
@@ -52,19 +55,12 @@ const ImagePickerModal = () => {
   // Request permissions on component mount
   useEffect(() => {
     requestPermission();
-    requestMediaLibraryPermissionsAsync().then(({ granted }) => {
-      if (!granted) {
-        Alert.alert("Permission Denied", "You need to allow media library access to select a photo.");
-      }
-    });
+    ImagePicker.requestMediaLibraryPermissionsAsync();
   }, []);
 
   // Handle permission status
   if (!permission) {
     return <View />; // Permissions loading
-  }
-  if (!permission.granted) {
-    return Alert.alert("Camera permission not granted");
   }
 
   // Toggle camera facing direction
@@ -75,43 +71,26 @@ const ImagePickerModal = () => {
   // Capture image and navigate to capture options screen
   const captureImage = async () => {
     if (cameraRef.current) {
-      const photo = await cameraRef.current.takePictureAsync({ ImageType: "jpg", quality: 1, base64: false });
+      const photo = await cameraRef.current.takePictureAsync({ ImageType: "jpg", quality: 1, base64: false});
       setPhotoUri(photo.uri);
       setShowCaptureOptions(true); // Show capture options screen
     }
   };
  
+     // Select image from gallery
   const selectImage = async () => {
-    try {
-      const options = {
-        mediaType: 'photo', // Only allow photos
-        quality: 1, // Maximum quality
-        includeBase64: false, // Do not include base64 encoding of the image
-      };
-      
-      const result = await launchImageLibrary(
-        {
-          mediaType: 'photo', // Only allow photos
-          quality: 1, // Maximum quality
-          includeBase64: false, // Do not include base64 encoding of the image
-        }
-      );
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaType : 'images',
+      allowsEditing: true,
+      aspect: [20, 20],
+      quality: 0,
+    });
 
-      if (result.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (result.errorCode) {
-        console.log('Error picking image: ', result.errorMessage);
-      } else {
-        // Use the URI of the selected image
-        const selectedImageUri = result.assets[0].uri;
-        setPhotoUri(selectedImageUri);
-        console.log('Image URI:', selectedImageUri);
-      }
-    } catch (error) {
-      console.error('Error selecting image:', error);
+    if (!result.canceled) {
+      setPhotoUri(result.assets[0].uri);
+      setShowCaptureOptions(true); // Show capture options screen
     }
   };
-
 
   // Handle "Use Photo" button
   const usePhoto = () => {
@@ -121,15 +100,19 @@ const ImagePickerModal = () => {
 
   // Render capture options screen (fullscreen with captured image)
   const renderCaptureOptions = () => (
-    <View style={styles.captureOptionsContainer}>
-      <Image source={{ uri: photoUri }} style={styles.capturedImage} />
-      <View style={styles.options}>
-        <TouchableOpacity>
-          <Entypo name="cross" size={54} color={"white"} onPress={() => setShowCaptureOptions(false)}></Entypo>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <AntDesign name="check" size={54} color="white" onPress={usePhoto} />
-        </TouchableOpacity>
+    <View style = {styles.container}>
+      <HomeScreenHeader></HomeScreenHeader>
+      <Text style={styles.conftext}>Continue With Image or Cancel.</Text>
+      <View style={styles.captureOptionsContainer}>
+        <Image source={{ uri: photoUri }} style={styles.capturedImage} />
+        <View style={styles.options}>
+          <TouchableOpacity>
+            <Entypo name="cross" size={34} color={"#2F363F"} onPress={() => setShowCaptureOptions(false)}></Entypo>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <AntDesign name="check" size={34} color="#2F363F" onPress={usePhoto} />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -186,7 +169,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     width: "100%",
-    height: 200,
     alignItems: "center",
   },
   loadingContainer: {
@@ -207,7 +189,7 @@ const styles = StyleSheet.create({
   text: {
     color: "white",
     fontSize: 15,
-    marginBottom: -15,
+    marginBottom : 25,
     top: 10,
   },
   previewContainer: {
@@ -221,22 +203,30 @@ const styles = StyleSheet.create({
   },
   captureOptionsContainer: {
     flex: 1,
-    backgroundColor: "black",
+    backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
+
   },
   capturedImage: {
-    width: "85%",
+    width: "95%",
     height: "85%",
-    resizeMode: "contain",
+    borderRadius : 25,
+
   },
   options: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 20,
     width: "60%",
     alignItems: "center",
+    marginTop : 20,
   },
+  conftext : {
+    marginLeft : 20,
+    marginBottom : -2,
+    fontSize : 20,
+
+  }
 });
 
 export default ImagePickerModal;

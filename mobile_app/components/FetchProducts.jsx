@@ -24,51 +24,65 @@ const FetchProducts = () => {
   //useEffect to fetch the data when this fetch product component loads in the app
 
   useEffect(() => {
-    //first fetch the products  the api
-    //use axios
+    let isMounted = true; // Flag to check if component is mounted
+  
+    // Set loading to true before the fetch starts
+    isLoading(true);
+  
     axios
       .get(`${IP_ADDRESSES.PC_LOCAL}:${IP_ADDRESSES.PORT_LOCAL}/products`)
-      //after successful response from axios.get
-      //response is passed to the then function
       .then((response) => {
-        setProducts(response.data.result)
-        //now the product state variable is updated with the response from server
-        isLoading(false)
+        // Only update the state if the component is still mounted
+        if (isMounted) {
+          setProducts(response.data);
+          isLoading(false); // Set loading to false after data is fetched
+        }
       })
-      //now the errors part
       .catch((err) => {
-        setError(true)
-        Alert.alert(`error fetching products from the db ${err}`)
+        // Only update the state if the component is still mounted
+        if (isMounted) {
+          setError(true);
+          Alert.alert(`Error fetching products from the DB: ${err.message}`);
+        }
       });
-  }
-    //pass the second component of the usestate function as an empty array
-    //this ensures useeffect will run only once when this component loads
-    , []
-  );
+  
+    // Cleanup function to set the flag to false when the component is unmounted
+    return () => {
+      isMounted = false;
+    };
+  }, []);
   //useEffect function/hook ends here
 
   //function renderItem to render items for the flatlist
   //after the product info has been fetched from the api it needs to be rendered
 
+
   const renderItem = (({ item }) => (
-
     <View style={styles.viewContainer}>
-      <Card style={styles.cardContainer} >
-        <Card.Cover style={styles.card} source={{ uri: `data:image/jpeg;base64,${item.image_data}` }}></Card.Cover>
+      <Card style={styles.cardContainer}>
+        {/* Using the image_url field from the server response */}
+        <Card.Cover style={styles.card} source={{ uri: item.image_url }}></Card.Cover>
         <Card.Content>
-          <Text numberOfLines={2} style={styles.productName}>{item.product_display_name}</Text>
-           {item.price == null ? <Text style= {styles.productPrice}>Price : N/A</Text> : <Text style={styles.productPrice}>Price : ${item.price}</Text> }
+          {/* Using the name field from the server response */}
+          <Text numberOfLines={2} style={styles.productName}>{item.name}</Text>
+          
+          {/* Handling the price, if it's null */}
+          {item.price == null ? 
+            <Text style={styles.productPrice}>Price : N/A</Text> : 
+            <Text style={styles.productPrice}>Price : ${item.price}</Text>
+          }
+          
+          {/* Using the rating field */}
           <Text style={styles.productRating}>Rating: {item.rating}</Text>
-
         </Card.Content>
+        
         <Card.Actions>
+          {/* Passing the product data to the 'ProductDetails' screen */}
           <Button onPress={() => navigation.navigate('ProductDetails', { product: item })} style={styles.button}>Buy Now</Button>
         </Card.Actions>
       </Card>
     </View>
-
-  )
-  )
+  ));
   //finally after rendering items return a flatlist
 
   return (
