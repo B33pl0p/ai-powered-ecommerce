@@ -1,0 +1,7 @@
+GET /products?skip=0&limit=10
+Random Products:
+
+bash
+Copy
+Edit
+GET /products?random=true&limit=5

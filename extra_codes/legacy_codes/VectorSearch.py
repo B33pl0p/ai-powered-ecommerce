@@ -5,8 +5,9 @@ import numpy as np
 DB_CONFIG = {
     "dbname": "products_db",
     "user": "postgres",
-    "password": "7878",
-    "host": "localhost",
+    #"password": "7878",
+    "password" : "biplop123bB#",
+    "host": "database-products.c9kqgsu44jjh.eu-north-1.rds.amazonaws.com",
     "port": "5432",
 }
 
