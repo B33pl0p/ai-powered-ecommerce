@@ -1,85 +1,77 @@
-import { FontAwesome6, MaterialCommunityIcons, FontAwesome } from "@expo/vector-icons";
-import React from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
+import { useState } from "react";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
+import categories from "./categories"; // ✅ Import category list
 
-const categories = [
-  { id: "1", name: "Electronics", icon : "microchip", provider : 'FontAwesome6' },
-  { id: "2", name: "Foods & Drinks", icon: "bowl-food", provider :'FontAwesome6' },
-  { id: "3", name: "Beauty" , icon: "face-smile-beam", provider :'FontAwesome6' },
-  { id: "4", name: "Furnitures" , icon: "table-furniture", provider :'MaterialCommunityIcons' },
-  { id: "5", name: "Fashion" , icon: "shirt", provider :'FontAwesome6' },
-  { id: "6", name: "Health" , icon: "medkit", provider :'FontAwesome' },
-  { id: "7", name: "Stationery" , icon: "book-atlas", provider :'FontAwesome6' },
-  { id: "7", name: "Vehicles" , icon: "car-side", provider :'FontAwesome6' },
+const CategoryGrid = ({ onSelectCategory }) => {
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-];
-
-const CategoryGrid = () => {
-
-
-  const renderIcon = (provider, icon) => {
-    switch (provider) {
-      case "FontAwesome6":
-        return <FontAwesome6 name={icon} size={25} color="#000" />;
-      case "MaterialCommunityIcons":
-        return <MaterialCommunityIcons name={icon} size={25} color="#000" />;
-      case "FontAwesome":
-        return <FontAwesome name={icon} size={25} color="#000" />;
-      default:
-        return null; // Fallback for unsupported providers
-    }
-  }
+  const handleCategoryClick = (categoryName) => {
+    setSelectedCategory(categoryName);
+    onSelectCategory(categoryName); // ✅ Fetch filtered products
+  };
 
   return (
-    <FlatList
-      scrollEnabled = {false}
-      data={categories}
-      keyExtractor={(item) => item.id}
-      numColumns={4} 
-      contentContainerStyle={styles.gridContainer}
-      renderItem={({ item }) => (
-        <TouchableOpacity style={styles.categoryItem}>
-          <View style={styles.iconContainer}>
-            <View style={styles.circle} >{renderIcon(item.provider, item.icon)}
-           </View>
-          </View>
-          <Text numberOfLines={1} style={styles.label}>{item.name}</Text>
-        </TouchableOpacity>
-      )}
-    />
+    <View style={styles.categoryContainer}>
+      <FlatList
+        data={categories}
+        keyExtractor={(item) => item.id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.flatListContainer}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            onPress={() => handleCategoryClick(item.name)}
+            style={[
+              styles.categoryButton,
+              selectedCategory === item.name && styles.selectedCategory,
+            ]}
+          >
+            {item.icon}
+            <Text
+              style={[
+                styles.categoryText,
+                selectedCategory === item.name && styles.selectedCategoryText,
+              ]}
+            >
+              {item.name}
+            </Text>
+          </TouchableOpacity>
+        )}
+      />
+    </View>
   );
 };
 
+// ✅ Create a reusable StyleSheet object
 const styles = StyleSheet.create({
-  gridContainer: {
-    paddingHorizontal: 5,
-    paddingVertical: 5,
-    height : '220',
-
-  },
-  categoryItem: {
-    flex: 1,
-    alignItems: "center",
-    
-  },
-  iconContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  circle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#e0e0e0", // Placeholder color
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  label: {
+  categoryContainer: {
     marginTop: 3,
-    fontSize: 14,
-    fontWeight: "500",
+    marginBottom: 3,
+    height: 80,
+  },
+  flatListContainer: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+  },
+  categoryButton: {
+    padding: 12,
+    backgroundColor: "#e0e0e0",
+    borderRadius: 50,
+    marginRight: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    height: 60,
+  },
+  selectedCategory: {
+    backgroundColor: "#007bff",
+  },
+  categoryText: {
     color: "#000",
-    textAlign: "center",
+    fontWeight: "bold",
+    marginLeft: 8,
+  },
+  selectedCategoryText: {
+    color: "#fff",
   },
 });
 

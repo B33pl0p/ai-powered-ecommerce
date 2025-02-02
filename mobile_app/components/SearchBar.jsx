@@ -11,7 +11,7 @@ const SearchBar = ({ onOpenModal, onCloseModal }) => {
   const searchText = async () => {
     try {
       const response = await axios.post(
-        `${IP_ADDRESSES.PC_LOCAL}:${IP_ADDRESSES.PORT_LOCAL}/upload_text`,
+        `${IP_ADDRESSES.IP}/upload_text`,
         { query_text: searchQuery },
         {
           headers: {
@@ -49,6 +49,6 @@ const styles = StyleSheet.create({
     height: 50,
     marginHorizontal: 20,
     marginBottom: 5,
-    marginTop : 10,
+    marginTop : 3,
   },
 });

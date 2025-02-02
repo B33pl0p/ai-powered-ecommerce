@@ -20,7 +20,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA"
+      ],
+      "package": "com.b33pl0p.ecommerce"
     },
     "web": {
       "bundler": "metro",
@@ -43,10 +48,17 @@
           "recordAudioAndroid": true
         }
       ]
-
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "b87a27ab-6896-4f39-8c01-23ef84d0be50"
+      }
     }
   }
 }

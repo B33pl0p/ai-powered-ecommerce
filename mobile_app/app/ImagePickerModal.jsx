@@ -32,7 +32,7 @@ const ImagePickerModal = () => {
         name: "photo.jpg",
       });
 
-      const response = await axios.post(`${IP_ADDRESSES.PC_LOCAL}:${IP_ADDRESSES.PORT_LOCAL}/upload_image`, formData, {
+      const response = await axios.post(`${IP_ADDRESSES.IP}/upload_image`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

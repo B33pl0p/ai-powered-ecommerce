@@ -17,7 +17,7 @@ def extract_text_embedding(query_text):
         text_embedding /= text_embedding.norm(dim=1, keepdim=True)
         #print("Normalized text embedding:", text_embedding)
 
-        return text_embedding.cpu().numpy().flatten()
+        return text_embedding.cpu().numpy().flatten().astype(numpy.float32)
 
 def extract_image_embedding(image_path):
     """

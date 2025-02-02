@@ -1,6 +1,6 @@
 const IP_ADDRESSES = {
-    PC_LOCAL : 'http://192.168.1.72',
-    PORT_LOCAL : '4000',
+    IP : 'https://api.aiecommerce.me',
+ 
     
   };
   

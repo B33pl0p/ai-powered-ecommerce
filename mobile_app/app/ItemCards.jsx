@@ -38,9 +38,9 @@ const ItemCards = () => {
           <Text numberOfLines={2} style={styles.productName}>
             {item.name}
           </Text>
-          <Text style={styles.productPrice}>${item.price}</Text>
+          <Text style={styles.productPrice}>Rs{item.price}</Text>
           <Text style={styles.productRating}>Rating: {item.rating}</Text>
-
+          <Text style={styles.productRating}>Category: {item.category}</Text>
         </Card.Content>
         <Card.Actions>
           <Button

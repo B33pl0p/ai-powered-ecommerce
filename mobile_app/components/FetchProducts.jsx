@@ -1,144 +1,137 @@
-import { StyleSheet, Text, View, Image, FlatList, Alert } from 'react-native'
-import React from 'react'
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import { Card, Button } from 'react-native-paper'; // Optional, for styled cards
-import { useNavigation } from '@react-navigation/native';
+import { StyleSheet, Text, View, Image, FlatList, Alert, ActivityIndicator } from "react-native";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Card, Button } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import IP_ADDRESSES from "./Ipaddresses";
 
-//initialize the navigation hook
-//ip address for global use
-
-import IP_ADDRESSES from './Ipaddresses'
-
-//start of the component FetchProduct
-const FetchProducts = () => {
-
-
-  //state variables
-
+const FetchProducts = ({ selectedCategory }) => {
   const navigation = useNavigation();
   const [products, setProducts] = useState([]);
-  const [loading, isLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  //useEffect to fetch the data when this fetch product component loads in the app
-
+  // ✅ Fetch products when the component mounts or when category changes
   useEffect(() => {
-    let isMounted = true; // Flag to check if component is mounted
-  
-    // Set loading to true before the fetch starts
-    isLoading(true);
-  
-    axios
-      .get(`${IP_ADDRESSES.PC_LOCAL}:${IP_ADDRESSES.PORT_LOCAL}/products`)
-      .then((response) => {
-        // Only update the state if the component is still mounted
+    let isMounted = true;
+    setLoading(true);
+
+    const fetchProducts = async () => {
+      try {
+        const endpoint = selectedCategory
+          ? `${IP_ADDRESSES.IP}/products?master_category=${encodeURIComponent(selectedCategory)}`
+          : `${IP_ADDRESSES.IP}/products`;
+
+        const response = await axios.get(endpoint);
         if (isMounted) {
           setProducts(response.data);
-          isLoading(false); // Set loading to false after data is fetched
+          setLoading(false);
         }
-      })
-      .catch((err) => {
-        // Only update the state if the component is still mounted
+      } catch (err) {
         if (isMounted) {
           setError(true);
-          Alert.alert(`Error fetching products from the DB: ${err.message}`);
+          Alert.alert("Error", `Failed to fetch products: ${err.message}`);
         }
-      });
-  
-    // Cleanup function to set the flag to false when the component is unmounted
+      }
+    };
+
+    fetchProducts();
+
     return () => {
       isMounted = false;
     };
-  }, []);
-  //useEffect function/hook ends here
+  }, [selectedCategory]); // ✅ Fetches new products when category changes
 
-  //function renderItem to render items for the flatlist
-  //after the product info has been fetched from the api it needs to be rendered
-
-
-  const renderItem = (({ item }) => (
+  // ✅ Function to render each product card
+  const renderItem = ({ item }) => (
     <View style={styles.viewContainer}>
       <Card style={styles.cardContainer}>
-        {/* Using the image_url field from the server response */}
-        <Card.Cover style={styles.card} source={{ uri: item.image_url }}></Card.Cover>
+        <Card.Cover source={{ uri: item.image_url }} style={styles.image} />
         <Card.Content>
-          {/* Using the name field from the server response */}
           <Text numberOfLines={2} style={styles.productName}>{item.name}</Text>
-          
-          {/* Handling the price, if it's null */}
-          {item.price == null ? 
-            <Text style={styles.productPrice}>Price : N/A</Text> : 
-            <Text style={styles.productPrice}>Price : ${item.price}</Text>
-          }
-          
-          {/* Using the rating field */}
-          <Text style={styles.productRating}>Rating: {item.rating}</Text>
+          <Text style={styles.productPrice}>
+            {item.price ? `Price: Rs. ${item.price}` : "Price: N/A"}
+          </Text>
+          <Text style={styles.productCategory}>Category: {item.category}</Text>
+          <Text style={styles.productRating}>Rating: {item.rating || "N/A"}</Text>
         </Card.Content>
-        
         <Card.Actions>
-          {/* Passing the product data to the 'ProductDetails' screen */}
-          <Button onPress={() => navigation.navigate('ProductDetails', { product: item })} style={styles.button}>Buy Now</Button>
+          <Button
+            onPress={() => navigation.navigate("ProductDetails", { product: item })}
+            style={styles.button}
+          >
+            View Details
+          </Button>
         </Card.Actions>
       </Card>
     </View>
-  ));
-  //finally after rendering items return a flatlist
+  );
 
   return (
- 
-      <FlatList
+    <View style={{ flex: 1 }}>
+      {loading ? (
+        <ActivityIndicator size="large" color="#007bff" style={{ marginTop: 20 }} />
+      ) : products.length > 0 ? (
+        <FlatList
+          data={products}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.product_id.toString()}
+          numColumns={2}
+          contentContainerStyle={styles.flatlist}
+        />
+      ) : (
+        <Text style={styles.noProductsText}>No products found.</Text>
+      )}
+    </View>
+  );
+};
 
-        data={products}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.product_id.toString()}
-        numColumns={2}
-        contentContainerStyle={styles.flatlist}
-      >
-      </FlatList>
-
-  )
-
-
-
-}
-
-export default FetchProducts
+export default FetchProducts;
 
 const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
-    overflow: 'visible',
-    position : 'relative',
-   
-
+    borderRadius: 8,
+    overflow: "hidden",
+    margin: 10,
+    elevation: 3, // Adds a shadow effect on Android
+    backgroundColor: "#fff",
   },
   viewContainer: {
-    justifyContent: 'space-around',
-    width: '50%',
+    flex: 1,
     padding: 10,
-    overflow : 'visible',
-    
- 
   },
-  card: {
-    margin: 15,
+  image: {
+    height: 150,
+    resizeMode: "cover",
   },
   productName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   productPrice: {
     fontSize: 16,
-    color: 'green',
+    color: "green",
+    marginTop: 4,
+  },
+  productCategory: {
+    fontSize: 14,
+    color: "#555",
+    marginTop: 2,
   },
   productRating: {
     fontSize: 14,
-    color: 'gray',
+    color: "#888",
+    marginTop: 2,
   },
   button: {
     flex: 1,
-    alignItems: 'center'
+    alignItems: "center",
   },
-
-})
+  noProductsText: {
+    textAlign: "center",
+    marginTop: 20,
+    fontSize: 16,
+    color: "#777",
+  },
+});
