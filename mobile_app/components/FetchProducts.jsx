@@ -19,7 +19,7 @@ const FetchProducts = ({ selectedCategory }) => {
     const fetchProducts = async () => {
       try {
         const endpoint = selectedCategory
-          ? `${IP_ADDRESSES.IP}/products?master_category=${encodeURIComponent(selectedCategory)}`
+          ? `${IP_ADDRESSES.IP}/products?random=true&master_category=${encodeURIComponent(selectedCategory)}`
           : `${IP_ADDRESSES.IP}/products`;
 
         const response = await axios.get(endpoint);
