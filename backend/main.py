@@ -10,6 +10,7 @@ import time
 import os
 from pinecone import Pinecone
 import FeatureExtractor
+import Transliterate
 
 
 #Pinecone Configureation
@@ -168,9 +169,13 @@ async def search_text(request: TextQueryRequest, db: Session = Depends(get_db)):
 
     query_text = request.query_text
 
+    #transliterate text from nepali to english before extracting features
+    transliterted_text = Transliterate.transliterate_nepali(query_text)
+    
+
     try:
         # Extract text embedding from the query
-        text_embedding = FeatureExtractor.extract_text_embedding(query_text)
+        text_embedding = FeatureExtractor.extract_text_embedding(transliterated_text)
     except Exception as e:
         print(f"Error during text extraction: {e}")
         return JSONResponse(content={"error": "Text extraction failed"}, status_code=500)
