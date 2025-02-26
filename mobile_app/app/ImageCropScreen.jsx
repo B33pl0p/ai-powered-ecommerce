@@ -86,6 +86,7 @@ const ImageCropScreen = () => {
           fileUri,
           [{ crop: cropData }],
           {
+            compress: 0.8,
             format: ImageManipulator.SaveFormat.JPEG,
           }
         );
@@ -100,7 +101,7 @@ const ImageCropScreen = () => {
         type: "image/jpeg",
       });
   
-      const apiUrl = `${IP_ADDRESSES.IP}/upload_image?similarity_threshold=0.85`;
+      const apiUrl = `${IP_ADDRESSES.IP}/upload_image?similarity_threshold=0.8`;
   
       const response = await axios.post(apiUrl, formData, {
         headers: { "Content-Type": "multipart/form-data" },
