@@ -9,6 +9,7 @@ import axios from "axios";
 import { ActivityIndicator } from "react-native";
 import HomeScreenHeader from "../components/HomeScreenHeader";
 import * as FileSystem from "expo-file-system";
+import IP_ADDRESSES from "../components/Ipaddresses";
 
 const ImagePickerModal = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -51,7 +52,7 @@ const ImagePickerModal = () => {
       });
 
       // Send image to backend
-      const response = await axios.post(`http://192.168.0.178:8000/detect/`, formData, {
+      const response = await axios.post(`${IP_ADDRESSES.IP_HF}/detect/`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -77,7 +78,7 @@ const ImagePickerModal = () => {
   const captureImage = async () => {
     if (cameraRef.current) {
       const photo = await cameraRef.current.takePictureAsync({
-        quality: 0.7, // Ensuring no compression
+        quality: 0.7, 
         base64: false,
       });
       setPhotoUri(photo.uri);
@@ -118,28 +119,32 @@ const ImagePickerModal = () => {
 
   return (
     <View style={styles.container}>
-      {isUploading ? (
-        <ActivityIndicator size="large" color="#007bff" />
-      ) : showCaptureOptions ? (
-        renderCaptureOptions()
-      ) : (
-        <CameraView style={styles.camera} ref={cameraRef}>
-          <Text style={styles.text}>Capture or Select an Image</Text>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={selectImage}>
-              <FontAwesome name="photo" size={30} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={captureImage}>
-              <FontAwesome name="dot-circle-o" size={65} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setFacing(facing === "front" ? "back" : "front")}>
-              <FontAwesome6 name="arrows-rotate" size={30} color="white" />
-            </TouchableOpacity>
+      <CameraView style={styles.camera} ref={cameraRef}>
+        <Text style={styles.text}>Capture or Select an Image</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={selectImage}>
+            <FontAwesome name="photo" size={30} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={captureImage}>
+            <FontAwesome name="dot-circle-o" size={65} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setFacing(facing === "front" ? "back" : "front")}>
+            <FontAwesome6 name="arrows-rotate" size={30} color="white" />
+          </TouchableOpacity>
+        </View>
+  
+        {/* Blurred overlay when uploading */}
+        {isUploading && (
+          <View style={styles.loadingOverlay}>
+            <Text style={styles.infoText}>If there are clothes in the image, they will be detected.</Text>
+            <ActivityIndicator size="large" color="#fff" />
+            <Text style={styles.loadingText}>Processing Image...</Text>
           </View>
-        </CameraView>
-      )}
+        )}
+      </CameraView>
     </View>
   );
+  
 };
 
 const styles = StyleSheet.create({
@@ -210,6 +215,29 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginBottom: -2,
     fontSize: 20,
+  },
+  loadingOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.6)", // Dark transparent overlay
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10, // Ensures it's above the camera
+  },
+  loadingText: {
+    color: "white",
+    fontSize: 18,
+    marginTop: 10,
+  },
+  infoText: {
+    color: "#fff",
+    fontSize: 16,
+    marginBottom: 10,
+    textAlign: "center",
+    width: "80%",
   },
 });
 
