@@ -4,6 +4,7 @@ import { Card, Button } from 'react-native-paper'; // Optional, for styled cards
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { BackHandler } from 'react-native';
 import HomeScreenHeader from '../components/HomeScreenHeader';
+import SearchBar from '../components/SearchBar';
 // Start of the component ItemCards
 const ItemCards = () => {
   const navigation = useNavigation();
@@ -59,6 +60,7 @@ const ItemCards = () => {
     <View>
       <HomeScreenHeader></HomeScreenHeader>
     <Text style = {styles.headerText}>Search Results</Text>
+      <SearchBar style= {styles.SearchBar}></SearchBar>
     <FlatList
       data={products}
       renderItem={renderItem}
@@ -112,6 +114,10 @@ const styles = StyleSheet.create({
     color : 'black',
     fontWeight : '600',
     marginLeft : 20,
-  }
+  },
+  SearchBar : {
+    height: 50,
+    width: 50,
+  },
 
 })
