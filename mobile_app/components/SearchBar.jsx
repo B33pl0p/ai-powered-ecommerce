@@ -1,17 +1,46 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Alert } from "react-native";
 import React, { useState } from "react";
 import { Searchbar } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import IP_ADDRESSES from "./Ipaddresses";
+
 const SearchBar = ({ onOpenModal, onCloseModal }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigation = useNavigation();
-  //function to send the query to the api
+
+  // ✅ Function to validate the input
+  const isValidQuery = (query) => {
+    // Prevent empty queries
+    if (!query.trim()) {
+      Alert.alert("Invalid Query", "Please enter a search query.");
+      return false;
+    }
+
+    // ✅ Prevent special characters (except letters, numbers, and spaces)
+    const specialCharRegex = /[^a-zA-Z0-9\s]/;
+    if (specialCharRegex.test(query)) {
+      Alert.alert("Invalid Query", "Special characters are not allowed.");
+      return false;
+    }
+
+    // ✅ Ensure at least 3 letters (not just words)
+    const letterCount = query.replace(/[^a-zA-Z]/g, "").length; // Count only letters
+    if (letterCount < 3) {
+      Alert.alert("Invalid Query", "Please enter at least 3 letters.");
+      return false;
+    }
+
+    return true;
+  };
+
+  // ✅ Function to send the query to the API
   const searchText = async () => {
+    if (!isValidQuery(searchQuery)) return; // Stop if query is invalid
+
     try {
       const response = await axios.post(
-        `${IP_ADDRESSES.IP}/upload_text`,
+        `${IP_ADDRESSES.IP}/upload_text?similarity_threshold=0.8&top_k=10`,
         { query_text: searchQuery },
         {
           headers: {
@@ -24,9 +53,10 @@ const SearchBar = ({ onOpenModal, onCloseModal }) => {
       navigation.navigate("ItemCards", { products: data.result });
     } catch (error) {
       console.error("Error uploading text:", error);
-      Alert.alert("Error", "Failed to upload text. Please try again.");
+      Alert.alert("Product not found with sufficient similarity.");
     }
   };
+
   return (
     <View>
       <Searchbar
@@ -34,9 +64,9 @@ const SearchBar = ({ onOpenModal, onCloseModal }) => {
         placeholder="Enter Text or Upload Image"
         onChangeText={setSearchQuery}
         value={searchQuery}
-        traileringIcon="camera" // Correct prop name
+        traileringIcon="camera"
         onTraileringIconPress={() => navigation.navigate("ImagePickerModal")}
-        onSubmitEditing={searchText} // Trigger search on text submission
+        onSubmitEditing={searchText} // ✅ Trigger search when Enter is pressed
       />
     </View>
   );
@@ -49,6 +79,6 @@ const styles = StyleSheet.create({
     height: 50,
     marginHorizontal: 20,
     marginBottom: 5,
-    marginTop : 3,
+    marginTop: 3,
   },
 });

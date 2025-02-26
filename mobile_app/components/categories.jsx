@@ -1,7 +1,7 @@
 import { FontAwesome5, MaterialIcons } from "react-native-vector-icons";
 
 const categories = [
-  { id: "1", name: "Apparels", icon: <FontAwesome5 name="tshirt" size={24} color="black" /> },
+  { id: "1", name: "Apparel", icon: <FontAwesome5 name="tshirt" size={24} color="black" /> },
   { id: "2", name: "Accessories", icon: <FontAwesome5 name="shopping-bag" size={24} color="black" /> },
   { id: "3", name: "Automobiles", icon: <FontAwesome5 name="car" size={24} color="black" /> },
   { id: "4", name: "Furnishing", icon: <MaterialIcons name="weekend" size={24} color="black" /> },

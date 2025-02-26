@@ -20,7 +20,7 @@ const FetchProducts = ({ selectedCategory }) => {
       try {
         const endpoint = selectedCategory
           ? `${IP_ADDRESSES.IP}/products?random=true&master_category=${encodeURIComponent(selectedCategory)}`
-          : `${IP_ADDRESSES.IP}/products`;
+          : `${IP_ADDRESSES.IP}/products?random=true`;
 
         const response = await axios.get(endpoint);
         if (isMounted) {
