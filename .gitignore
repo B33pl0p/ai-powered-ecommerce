@@ -1,6 +1,7 @@
-
+clothes_detection/__pycache__/
 backend/__pycache__/
 database/data
 .venv
 backend/.venv
 mobile_app/node_modules
+clothes_detection/uploads
