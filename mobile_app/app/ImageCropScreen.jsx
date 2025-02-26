@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Image,
@@ -18,20 +18,31 @@ const ImageCropScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
 
-  const { detections, originalImageUri, detected_image_width, detected_image_height } =
-    route.params || {};
+  const {
+    detections = [],
+    originalImageUri,
+    detected_image_width,
+    detected_image_height,
+  } = route.params || {};
 
-  const [selectedBox, setSelectedBox] = useState(null);
+  // ✅ If no detections, use the full image as the bounding box
+  const defaultBox =
+    detections.length > 0
+      ? 0
+      : {
+          bbox: [0, 0, detected_image_width, detected_image_height],
+        };
+
+  const [selectedBox, setSelectedBox] = useState(
+    detections.length > 0 ? 0 : defaultBox
+  );
   const [isUploading, setIsUploading] = useState(false);
 
-  // ✅ Get screen dimensions
   const screenWidth = Dimensions.get("window").width;
   const screenHeight = Dimensions.get("window").height * 0.7; // 70% of the screen height to prevent overflow
 
-  // ✅ Calculate aspect ratio
   const aspectRatio = detected_image_width / detected_image_height;
 
-  // ✅ Adjusted image width & height to fit within the screen
   let scaledWidth = screenWidth;
   let scaledHeight = screenWidth / aspectRatio;
 
@@ -40,81 +51,78 @@ const ImageCropScreen = () => {
     scaledWidth = screenHeight * aspectRatio;
   }
 
-  // ✅ Scaling factors for bounding boxes
   const scaleX = scaledWidth / detected_image_width;
   const scaleY = scaledHeight / detected_image_height;
 
-  const uploadCroppedImage = async () => {
-    if (selectedBox === null) {
-      Alert.alert("No Selection", "Please select an item to crop.");
-      return;
-    }
-
+  const uploadCroppedImage = async (isFullImage = false) => {
     setIsUploading(true);
-
+  
     try {
-      const box = detections[selectedBox].bbox;
-
-      // ✅ Correct cropping coordinates based on original image
-      const cropData = {
-        originX: box[0],
-        originY: box[1],
-        width: box[2] - box[0],
-        height: box[3] - box[1],
-      };
-
-      // ✅ Ensure the image URI is correctly formatted (file://)
-      const fileUri = originalImageUri.startsWith("file://")
+      let fileUri = originalImageUri.startsWith("file://")
         ? originalImageUri
         : `file://${originalImageUri}`;
-
-      // Crop the image using expo-image-manipulator
-      const croppedImage = await ImageManipulator.manipulateAsync(fileUri, [{ crop: cropData }], {
-        compress: 0.8,
-        format: ImageManipulator.SaveFormat.JPEG,
-      });
-
+  
+      let croppedImageUri = fileUri; // Default to full image
+  
+      if (!isFullImage) {
+        if (selectedBox === null) {
+          Alert.alert("No Selection", "Please select an item to crop.");
+          return;
+        }
+  
+        const box =
+          typeof selectedBox === "number"
+            ? detections[selectedBox].bbox
+            : selectedBox.bbox;
+  
+        const cropData = {
+          originX: box[0],
+          originY: box[1],
+          width: box[2] - box[0],
+          height: box[3] - box[1],
+        };
+  
+        const croppedImage = await ImageManipulator.manipulateAsync(
+          fileUri,
+          [{ crop: cropData }],
+          {
+            format: ImageManipulator.SaveFormat.JPEG,
+          }
+        );
+  
+        croppedImageUri = croppedImage.uri;
+      }
+  
       const formData = new FormData();
       formData.append("image", {
-        uri: croppedImage.uri,
+        uri: croppedImageUri,
         name: "cropped_photo.jpg",
         type: "image/jpeg",
       });
-
-      console.log("Sending FormData:", formData);
-
-      // ✅ Verify the backend endpoint URL
-      const apiUrl = `${IP_ADDRESSES.IP}/upload_image`;
-      console.log("API URL:", apiUrl);
-
+  
+      const apiUrl = `${IP_ADDRESSES.IP}/upload_image?similarity_threshold=0.85`;
+  
       const response = await axios.post(apiUrl, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
-      console.log("API Response:", response.data);
-
+  
       if (response.data.result) {
         navigation.navigate("ItemCards", { products: response.data.result });
       } else {
-        Alert.alert("No products found.");
+        Alert.alert("No products found with sufficient similarity.");
       }
     } catch (error) {
-      console.error("Error uploading cropped image:", error);
-
-      if (error.response) {
-        console.error("Server Response:", error.response.data);
-      }
-
-      Alert.alert("Error", "Failed to upload the cropped image. Please try again.");
+      console.error("Error uploading image:", error);
+      Alert.alert("Error", "Failed to upload image.");
     } finally {
       setIsUploading(false);
     }
   };
+  
 
   return (
     <View style={styles.container}>
       <View style={styles.imageWrapper}>
-        {/* ✅ Display Resized Image */}
         <Image
           source={{ uri: originalImageUri }}
           style={{
@@ -124,34 +132,55 @@ const ImageCropScreen = () => {
           }}
         />
 
-        {/* ✅ Overlay Bounding Boxes with Correct Scaling */}
-        {detections.map((detection, index) => {
-          const box = detection.bbox;
-          return (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.boundingBox,
-                {
-                  left: box[0] * scaleX,
-                  top: box[1] * scaleY, // Correctly scales to fit
-                  width: (box[2] - box[0]) * scaleX,
-                  height: (box[3] - box[1]) * scaleY,
-                  borderColor: selectedBox === index ? "blue" : "white",
-                },
-              ]}
-              onPress={() => setSelectedBox(index)}
-            />
-          );
-        })}
+        {detections.length > 0 ? (
+          detections.map((detection, index) => {
+            const box = detection.bbox;
+            return (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.boundingBox,
+                  {
+                    left: box[0] * scaleX,
+                    top: box[1] * scaleY,
+                    width: (box[2] - box[0]) * scaleX,
+                    height: (box[3] - box[1]) * scaleY,
+                    borderColor: selectedBox === index ? "blue" : "white",
+                  },
+                ]}
+                onPress={() => setSelectedBox(index)}
+              />
+            );
+          })
+        ) : (
+          <TouchableOpacity
+            style={[
+              styles.boundingBox,
+              {
+                left: 0,
+                top: 0,
+                width: scaledWidth,
+                height: scaledHeight,
+                borderColor: "blue",
+              },
+            ]}
+            onPress={() => setSelectedBox(defaultBox)}
+          />
+        )}
       </View>
 
       {isUploading ? (
         <ActivityIndicator size="large" color="#007bff" />
       ) : (
-        <TouchableOpacity style={styles.button} onPress={uploadCroppedImage}>
-          <Text style={styles.buttonText}>Search Selected Item</Text>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity style={styles.button} onPress={() => uploadCroppedImage(false)}>
+            <Text style={styles.buttonText}>Search Selected Item</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.button} onPress={() => uploadCroppedImage(true)}>
+            <Text style={styles.buttonText}>Search Entire Image</Text>
+          </TouchableOpacity>
+        </View>
+
       )}
     </View>
   );
@@ -173,8 +202,8 @@ const styles = StyleSheet.create({
   },
   boundingBox: {
     position: "absolute",
-    borderWidth: 2,
-    backgroundColor: "rgba(0, 0, 255, 0.2)",
+    borderWidth: 1.5,
+    
   },
   button: {
     backgroundColor: "#007bff",
