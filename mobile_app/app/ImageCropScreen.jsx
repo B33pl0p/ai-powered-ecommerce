@@ -13,6 +13,7 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import * as ImageManipulator from "expo-image-manipulator";
 import IP_ADDRESSES from "../components/Ipaddresses";
+import HomeScreenHeader from "../components/HomeScreenHeader";
 
 const ImageCropScreen = () => {
   const route = useRoute();
@@ -122,6 +123,7 @@ const ImageCropScreen = () => {
   
 
   return (
+   
     <View style={styles.container}>
       <View style={styles.imageWrapper}>
         <Image
@@ -171,11 +173,14 @@ const ImageCropScreen = () => {
       </View>
 
       {isUploading ? (
-        <ActivityIndicator size="large" color="#007bff" />
+      <View style={styles.loadingOverlay}>
+      <ActivityIndicator size="large" color="#007bff" />
+      <Text style={styles.loadingText}>Uploading...</Text>
+    </View>
       ) : (
-        <View>
+        <View style = {styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={() => uploadCroppedImage(false)}>
-            <Text style={styles.buttonText}>Search Selected Item</Text>
+            <Text style={styles.buttonText}>Search Selected</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={() => uploadCroppedImage(true)}>
             <Text style={styles.buttonText}>Search Entire Image</Text>
@@ -192,9 +197,12 @@ export default ImageCropScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black",
-    justifyContent: "center",
+    justifyContent: 'space-evenly',
     alignItems: "center",
+    flexDirection : "column",
+
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+ 
   },
   imageWrapper: {
     position: "relative",
@@ -210,11 +218,27 @@ const styles = StyleSheet.create({
     backgroundColor: "#007bff",
     padding: 10,
     margin: 20,
-    borderRadius: 5,
+    borderRadius: 15,
   },
   buttonText: {
     color: "white",
     textAlign: "center",
     fontSize: 16,
   },
+  loadingOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 999,
+  },
+  buttonContainer : {
+    alignItems: 'center',
+    flexDirection : 'row'
+
+  }
 });
