@@ -1,11 +1,6 @@
 import { Tabs } from "expo-router";
-import discoverScreen from "./discoverScreen";
-import profileScreen from "./profileScreen";
-
-
 import { Octicons } from "@expo/vector-icons";
-import FetchProducts from "../../components/FetchProducts";
-import ProductDetails from "../ProductDetails";
+
 //stack navigation for the homescreen
 //contains product details screen 
 
