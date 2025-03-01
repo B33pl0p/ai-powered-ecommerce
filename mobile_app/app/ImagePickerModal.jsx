@@ -8,7 +8,6 @@ import React from "react";
 import axios from "axios";
 import { ActivityIndicator } from "react-native";
 import HomeScreenHeader from "../components/HomeScreenHeader";
-import * as FileSystem from "expo-file-system";
 import IP_ADDRESSES from "../components/Ipaddresses";
 
 const ImagePickerModal = () => {
@@ -119,7 +118,7 @@ const ImagePickerModal = () => {
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} ref={cameraRef}>
+      <CameraView style={styles.camera} ref={cameraRef} facing={facing}>
         <Text style={styles.text}>Capture or Select an Image</Text>
         <View style={styles.buttonContainer}>
           <TouchableOpacity onPress={selectImage}>
@@ -128,7 +127,7 @@ const ImagePickerModal = () => {
           <TouchableOpacity onPress={captureImage}>
             <FontAwesome name="dot-circle-o" size={65} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => setFacing(facing === "front" ? "back" : "front")}>
+          <TouchableOpacity onPress={() => setFacing(facing == "front" ? "back" : "front")}>
             <FontAwesome6 name="arrows-rotate" size={30} color="white" />
           </TouchableOpacity>
         </View>
