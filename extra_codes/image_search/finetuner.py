@@ -128,7 +128,7 @@ for epoch in tqdm(range(num_epoch)):
         loss.backward()  #Backpropagation (adjust model weights)
         optimizer.step()  #update model parameteres
 
-    print(f"Epoch {epoch+1}/{num_epochs}, Loss: {loss.item()}")
+    print(f"Epoch {epoch+1}/{num_epoch}, Loss: {loss.item()}")
             
 
 #saving the finetuned model
