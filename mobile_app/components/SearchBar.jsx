@@ -50,7 +50,7 @@ const SearchBar = ({ onOpenModal, onCloseModal }) => {
       );
 
       const data = response.data;
-      navigation.navigate("ItemCards", { products: data.result });
+      navigation.navigate("(screens)/ItemCards", { products: data.result, searchQuery: searchQuery });
     } catch (error) {
       console.error("Error uploading text:", error);
       Alert.alert("Product not found with sufficient similarity.");
@@ -65,7 +65,7 @@ const SearchBar = ({ onOpenModal, onCloseModal }) => {
         onChangeText={setSearchQuery}
         value={searchQuery}
         traileringIcon="camera"
-        onTraileringIconPress={() => navigation.navigate("ImagePickerModal")}
+        onTraileringIconPress={() => navigation.navigate("(screens)/ImagePickerModal")}
         onSubmitEditing={searchText} // ✅ Trigger search when Enter is pressed
       />
     </View>
