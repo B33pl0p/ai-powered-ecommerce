@@ -13,6 +13,7 @@ const ItemCards = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortOption, setSortOption] = useState('Best Match');
   const [menuVisible, setMenuVisible] = useState(false);
+  const searchQuery = route.params?.searchQuery || '';
 
   useEffect(() => {
     if (route.params?.products) {
@@ -76,7 +77,7 @@ const ItemCards = () => {
   return (
     <PaperProvider theme={DefaultTheme}>
       <HomeScreenHeader />
-      <Text style={styles.headerText}>Search Results</Text>
+      <Text style={styles.headerText}>Search Results for "{searchQuery}"</Text>
       <SearchBar style={styles.SearchBar} />
 
       {/* Sorting Dropdown */}
@@ -150,10 +151,12 @@ const styles = StyleSheet.create({
     color: 'blue',
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 20,
     color: 'black',
     fontWeight: '600',
     marginLeft: 20,
+    fontStyle : "italic",
+    marginBottom : 5,
   },
   SearchBar: {
     height: 50,
