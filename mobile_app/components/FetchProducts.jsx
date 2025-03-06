@@ -93,17 +93,17 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 8,
     overflow: "hidden",
-    margin: 10,
+    margin: 5,
     elevation: 3, // Adds a shadow effect on Android
     backgroundColor: "#fff",
   },
   viewContainer: {
     flex: 1,
-    padding: 10,
+    padding: 5,
   },
   image: {
     height: 150,
-    resizeMode: "cover",
+    resizeMode: "contain",
   },
   productName: {
     fontSize: 18,
